@@ -133,7 +133,7 @@ const Gallery = () => {
             <div
               key={image.id}
               className={`
-                cursor-grabbing
+             
                 w-full
                 rounded-2xl
                 border-2
@@ -161,7 +161,7 @@ const Gallery = () => {
                 <img
                   src={image.src}
                   alt={image.alt}
-                  className="w-full rounded-2xl"
+                  className="w-full rounded-2xl shadow-lg hover:shadow-xl transition duration-300"
                 />
               )}
               {selectedImages.includes(image.id) && (
