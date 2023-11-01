@@ -17,6 +17,8 @@ const Gallery = () => {
     const storedSelectedImages =
       JSON.parse(localStorage.getItem("selectedImages")) || [];
     setSelectedImages(storedSelectedImages);
+
+    localStorage.removeItem("selectedImages");
   }, []);
 
   const saveImagesToLocalStorage = (images) => {
@@ -128,7 +130,7 @@ const Gallery = () => {
       )}
 
       <div className="px-6 py-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {galleryImages.map((image) => (
             <div
               key={image.id}
