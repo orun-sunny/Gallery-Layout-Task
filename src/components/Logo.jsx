@@ -1,7 +1,5 @@
 const Logo = () => {
-    return (
-        <div>Gallery</div>
-    )
-}
+  return <div>Gallery-Task</div>;
+};
 
-export default Logo
+export default Logo;
