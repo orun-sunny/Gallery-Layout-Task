@@ -9,11 +9,13 @@ const Gallery = () => {
   });
   const [selectedImages, setSelectedImages] = useState([]);
   const [draggedImage, setDraggedImage] = useState(null);
+  const [isDraggingOver] = useState(false);
+  const [draggingIndex] = useState(null);
   const [newImage, setNewImage] = useState(null);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    // Load selected images from local storage when the component mounts
+    // Load selected images from local storage
     const storedSelectedImages =
       JSON.parse(localStorage.getItem("selectedImages")) || [];
     setSelectedImages(storedSelectedImages);
@@ -131,7 +133,7 @@ const Gallery = () => {
 
       <div className="px-6 py-6">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {galleryImages.map((image) => (
+          {galleryImages.map((image, index) => (
             <div
               key={image.id}
               className={`
@@ -148,8 +150,13 @@ const Gallery = () => {
                 ${selectedImages.includes(image.id) ? "selected" : ""}
                 ${
                   draggedImage === image.src
-                    ? "shadow-md"
+                    ? "shadow-md animate-pulse"
                     : "shadow-lg hover:shadow-xl transition duration-300"
+                }
+                ${
+                  isDraggingOver && index !== draggingIndex
+                    ? "border-dotted border-8 p-12"
+                    : ""
                 }
                 `}
               draggable="true"
