@@ -115,13 +115,13 @@ const Gallery = () => {
   return (
     <div className="my-16">
       {selectedImages.length > 0 && (
-        <div className="flex justify-between border-b-2 mb-5">
-          <h2 className="text-2xl font-semibold">
+        <div className="flex py-2 justify-between mx-24 border-b-2 mb-5">
+          <h2 className="text-2xl font-semibold py-4">
             {`${selectedImages.length} Files Selected`}
           </h2>
           <div onClick={handleDeleteSelected} className="cursor-pointer">
-            <h2 className="text-xl font-bold text-red-600 hover:underline">
-              Delete Selected Files
+            <h2 className="text-xl font-bold text-white hover:border p-4 bg-slate-500 ">
+              Delete Files
             </h2>
           </div>
         </div>
