@@ -8,6 +8,7 @@ const Gallery = () => {
     return storedImages ? JSON.parse(storedImages) : images;
   });
   const [selectedImages, setSelectedImages] = useState([]);
+  const [draggedImage, setDraggedImage] = useState(null);
   const [newImage, setNewImage] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -28,37 +29,45 @@ const Gallery = () => {
 
   const handleDragStart = (e, src) => {
     e.dataTransfer.setData("text/plain", src);
+    setDraggedImage(src);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedImage(null);
   };
 
   const handleDragOver = (e) => {
     e.preventDefault();
   };
-
+  //Drag and drop working here
   const handleDrop = (e, src) => {
     e.preventDefault();
-    const draggedSrc = e.dataTransfer.getData("text/plain");
-    const draggedIndex = galleryImages.findIndex(
-      (img) => img.src === draggedSrc
-    );
-    const targetIndex = galleryImages.findIndex((img) => img.src === src);
+    if (draggedImage) {
+      const draggedSrc = e.dataTransfer.getData("text/plain");
+      const draggedIndex = galleryImages.findIndex(
+        (img) => img.src === draggedSrc
+      );
+      const targetIndex = galleryImages.findIndex((img) => img.src === src);
 
-    // Check the targetIndex's featured value
-    const targetFeatured = galleryImages[targetIndex].featured;
-    if (targetFeatured) {
-      // If the target is featured, set the dragged element's featured value to true
-      galleryImages[draggedIndex].featured = true;
-      galleryImages[targetIndex].featured = false;
+      // Check the targetIndex's featured value
+      const targetFeatured = galleryImages[targetIndex].featured;
+      if (targetFeatured) {
+        // If the target is featured, set the dragged element's featured value to true
+        galleryImages[draggedIndex].featured = true;
+        galleryImages[targetIndex].featured = false;
+      }
+
+      const newGalleryImages = [...galleryImages];
+      const temp = newGalleryImages[draggedIndex];
+      newGalleryImages[draggedIndex] = newGalleryImages[targetIndex];
+      newGalleryImages[targetIndex] = temp;
+
+      setGalleryImages(newGalleryImages);
+      saveImagesToLocalStorage(newGalleryImages);
     }
-
-    const newGalleryImages = [...galleryImages];
-    const temp = newGalleryImages[draggedIndex];
-    newGalleryImages[draggedIndex] = newGalleryImages[targetIndex];
-    newGalleryImages[targetIndex] = temp;
-
-    setGalleryImages(newGalleryImages);
-    saveImagesToLocalStorage(newGalleryImages);
   };
 
+  //clicked  and selected
   const handleImageClick = (image) => {
     if (selectedImages.includes(image.id)) {
       setSelectedImages(selectedImages.filter((id) => id !== image.id));
@@ -102,17 +111,16 @@ const Gallery = () => {
       setNewImage(null);
     }
   }, [newImage, galleryImages]);
+
   return (
-    <div className="my-16 ">
+    <div className="my-16">
       {selectedImages.length > 0 && (
-        <div className="flex justify-around border-b-2 mb-5">
-          {
-            <h2 className="text-2xl font-semibold mb-3">
-              {`${selectedImages.length} `} Files Selected
-            </h2>
-          }
-          <div onClick={handleDeleteSelected}>
-            <h2 className="text-xl font-bold text-red-600 cursor-pointer hover:underline">
+        <div className="flex justify-between border-b-2 mb-5">
+          <h2 className="text-2xl font-semibold">
+            {`${selectedImages.length} Files Selected`}
+          </h2>
+          <div onClick={handleDeleteSelected} className="cursor-pointer">
+            <h2 className="text-xl font-bold text-red-600 hover:underline">
               Delete Selected Files
             </h2>
           </div>
@@ -136,10 +144,16 @@ const Gallery = () => {
                   "row-start-1 col-start-1 col-end-3 lg:row-start-1 lg:col-start-1 lg:row-end-3 lg:col-end-3 md:row-start-1 md:col-start-1 md:row-end-3 md:col-end-3"
                 }
                 ${selectedImages.includes(image.id) ? "selected" : ""}
+                ${
+                  draggedImage === image.src
+                    ? "shadow-md"
+                    : "shadow-lg hover:shadow-xl transition duration-300"
+                }
                 `}
               draggable="true"
-              onDragOver={handleDragOver}
               onDragStart={(e) => handleDragStart(e, image.src)}
+              onDragEnd={handleDragEnd}
+              onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, image.src)}
               onClick={() => handleImageClick(image)}
             >
