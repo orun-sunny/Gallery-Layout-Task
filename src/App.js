@@ -1,9 +1,10 @@
-import Main from "./pages/main";
+import Home from "./pages/components/Home";
+
 
 function App() {
   return (
     <>
-      <Main />
+      <Home />
     </>
   );
 }
